@@ -21,4 +21,14 @@ class Controller extends BaseController
             ],
         ], $code);
     }
+
+    public function resJsonError($message, $code)
+    {
+        return response()->json([
+            'error' => [
+                'code'    => $code,
+                'message' => $message,
+            ],
+        ], $code);
+    }
 }

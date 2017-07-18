@@ -18,4 +18,10 @@ class UserRepository extends Repository
             'active'   => $data['active'] ?? 0,
         ]);
     }
+
+    public static function updateApiToken($userId)
+    {
+        return User::find($userId)
+            ->update(['api_token' => bcrypt(time().str_random(60))]);
+    }
 }

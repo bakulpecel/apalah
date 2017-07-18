@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::namespace('Api')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('/register', 'AuthController@register');
-        // Route::post('/login', 'AuthController@login');
+        Route::post('/login', 'AuthController@login');
         // Route::post('/activation', 'AuthController@postActivation');
         // Route::get('/activation', 'AuthController@getActivation');
         // Route::post('/reset_password', 'AuthController@resetPassword');
