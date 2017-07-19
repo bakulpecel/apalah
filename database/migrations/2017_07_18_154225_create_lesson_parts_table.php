@@ -14,13 +14,12 @@ class CreateLessonPartsTable extends Migration
     public function up()
     {
         Schema::create('lesson_parts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->integer('lesson_id')->unsigned();
             $table->string('title');
             $table->string('slug')->unique()->index();
             $table->string('url_video')->nullable();
-            $table->string('duration');
-            $table->integer('views');
-            $table->integer('lesson_id')->unsigned();
+            $table->string('duration')->nullable();
+            $table->integer('views')->default(0);
             $table->timestamps();
 
             $table->foreign('lesson_id')->references('id')->on('lessons')->onDelete('cascade');
