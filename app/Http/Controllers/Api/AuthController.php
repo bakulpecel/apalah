@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Repositories\UserActivationRepository;
-use App\Repositories\UserRepository;
+use App\Models\UserActivation;
 use App\Transformers\UserTransformer;
 
 class AuthController extends Controller
@@ -32,8 +32,21 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $user = UserRepository::create($request->only(['name', 'username', 'email', 'password']));
-        $userActivation = UserActivationRepository::create($user->toArray());
+        $user = User::create([
+            'name'     => $request->name,
+            'username' => $request->username,
+            'email'    => $request->email,
+            'password' => bcrypt($request->password),
+            'role_id'  => 4,
+            'active'   => 0,
+        ]);
+
+        $userActivation = UserActivation::create([
+            'email'      => $user->email,
+            'token'      => str_random(60),
+            'expired_at' => Carbon::now('Asia/Jakarta')->addDay(1),
+            'created_at' => Carbon::now('Asia/Jakarta'),
+        ]);
 
         $data = $user->toArray();
         $data['token'] = $userActivation->token;
@@ -75,7 +88,8 @@ class AuthController extends Controller
             return $this->resJsonError('Login gagal!. Silakan aktivasi akun anda terlebih dahulu.', 401);
         }
 
-        UserRepository::updateApiToken(Auth::user()->id);
+        User::find(Auth::user()->id)
+            ->update(['api_token' => bcrypt(time().str_random(60))]);
 
         $response = fractal()
             ->item($user = User::find(Auth::user()->id))
