@@ -16,6 +16,24 @@ use App\Transformers\LessonTransformer;
 
 class LessonController extends Controller
 {
+    public function show(Request $request, $slug)
+    {
+        $lesson = Lesson::where('slug', $slug)
+            ->first();
+
+        if (!$lesson) {
+            return $this->resJsonError('Artikel tidak ditemukan', 404);
+        }
+
+        $response = fractal()
+            ->item($lesson)
+            ->transformWith(new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
