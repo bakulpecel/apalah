@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Lesson;
+use App\Models\LessonCategory;
+use App\Transformers\LessonTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Lesson;
-use App\Models\LessonCategory;
-use App\Transformers\LessonTransformer;
 
 class LessonController extends Controller
 {
@@ -98,5 +98,21 @@ class LessonController extends Controller
 
         return response()
             ->json($response, 201);
+    }
+
+    public function destroy($slug)
+    {
+        $lesson = Lesson::where('slug', $slug)
+            ->first();
+
+        if (!$lesson) {
+            return $this->resJsonError('Artikel tidak ditemukan', 404);
+        }
+
+        $this->authorize('delete', $lesson);
+
+        $lesson->delete();
+
+        return $this->resJsonSuccess('Artikel berhasil dihapus.', 200);
     }
 }

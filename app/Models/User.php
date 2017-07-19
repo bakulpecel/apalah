@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Lesson;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -32,5 +33,18 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function ownsLesson(Lesson $lesson)
+    {
+        if (auth()->user()->role_id === 1) {
+            return true;
+        }
+
+        if (auth()->id() === $lesson->user->id) {
+            return true;
+        }
+
+        return false;
     }
 }

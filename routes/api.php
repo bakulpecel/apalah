@@ -29,7 +29,7 @@ Route::namespace('Api')->group(function () {
         Route::middleware(['auth:api', 'lesson:api'])->group(function () {
             Route::post('', 'LessonController@store');
             // Route::put('/{slug}', 'LessonController@update');
-            // Route::delete('/{slug}', 'LessonController@show');
+            Route::delete('/{slug}', 'LessonController@destroy');
         });
     });
 });
