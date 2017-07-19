@@ -13,16 +13,42 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class LessonController extends Controller
 {
+    public function index(Request $request)
+    {
+        if ($request->hasHeader('paginator')) {
+            $paginator = Lesson::paginate($request->paginator);
+            $lessons   = $paginator->getCollection();
+
+            $response = fractal()
+                ->collection($lessons, new LessonTransformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        $lessons = Lesson::all();
+
+        $response = fractal()
+            ->collection($lessons, new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
     public function show(Request $request, $slug)
     {
         $lesson = Lesson::where('slug', $slug)
             ->first();
 
         if (!$lesson) {
-            return $this->resJsonError('Artikel tidak ditemukan', 404);
+            return $this->resJsonError('Pelajaran tidak ditemukan', 404);
         }
 
         $response = fractal()
