@@ -26,7 +26,7 @@ Route::namespace('Api')->group(function () {
         // Route::get('', 'LessonController@index');
         // Route::get('/{slug}', 'LessonController@show');
         
-        Route::middleware('auth:api')->group(function () {
+        Route::middleware(['auth:api', 'lesson:api'])->group(function () {
             Route::post('', 'LessonController@store');
             // Route::put('/{slug}', 'LessonController@update');
             // Route::delete('/{slug}', 'LessonController@show');
