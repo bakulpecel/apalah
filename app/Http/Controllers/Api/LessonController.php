@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Lesson;
 use App\Models\LessonCategory;
+use App\Models\LessonPart;
 use App\Transformers\LessonTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -129,6 +130,85 @@ class LessonController extends Controller
             'user_id'         => Auth::user()->id,
             'published_at'    => $published ?? null,
         ]);
+
+        foreach ($request->categories as $keyCategory => $valueCategory) {
+            $category = Category::firstOrCreate([
+                'slug'     => str_replace(' ', '-', strtolower($valueCategory)),
+                'category' => $valueCategory,
+            ]);
+
+            $lessonCategory = LessonCategory::create([
+                'lesson_id'   => $lesson->id,
+                'category_id' => $category->id,
+            ]);
+        }
+
+        $response = fractal()
+            ->item($lesson)
+            ->transformWith(new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 201);
+    }
+
+    public function update(Request $request, $slug)
+    {
+        $lesson = Lesson::where('slug', $slug)
+            ->first();
+
+        if (!$lesson) {
+            return $this->resJsonError('Artikel tidak ditemukan', 404);
+        }
+
+        $this->authorize('update', $lesson);
+
+        $validator = Validator::make($request->all(), [
+            'title'           => 'required|min:5|',
+            'slug'            => 'required|min:5|alpha_dash',
+            'summary'         => 'required|min:20|',
+            'thumbnail'       => 'image|mimes:jpeg,jpg,png|max:512',
+            'url_source_code' => 'active_url',
+            'type'            => 'required|integer|between:0,1',
+            'status'          => 'required|integer|between:0,1',
+            'categories'      => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code'    => 400,
+                    'message' => $validator->errors(),
+                ],
+            ], 400);
+        }
+
+        if ($request->hasFile('thumbnail')) {
+            Storage::disk('local')
+                ->put('thumbnail/lessons/' . $imageName = time() . '.' . $request->thumbnail->getClientOriginalExtension(),
+                    File::get($request->file('thumbnail'))
+                );
+        }
+
+        if ($request->status == 1) {
+            $published = Carbon::now('Asia/Jakarta');
+        }
+
+        $lesson->update([
+            'title'           => $request->title,
+            'slug'            => $request->slug,
+            'summary'         => $request->summary,
+            'parts'           => LessonPart::where('lesson_id', $lesson->id)->count(),
+            'thumbnail'       => $imageName ?? null,
+            'url_source_code' => $request->url_source_code ?? null,
+            'type'            => $request->type,
+            'status'          => $request->status,
+            'user_id'         => Auth::user()->id,
+            'published_at'    => $published ?? null,
+        ]);
+
+        LessonCategory::where('lesson_id', $lesson->id)
+            ->delete();
 
         foreach ($request->categories as $keyCategory => $valueCategory) {
             $category = Category::firstOrCreate([

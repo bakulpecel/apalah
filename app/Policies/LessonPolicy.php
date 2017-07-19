@@ -10,6 +10,11 @@ class LessonPolicy
 {
     use HandlesAuthorization;
 
+    public function update(User $user, Lesson $lesson)
+    {
+        return $user->ownsLesson($lesson);
+    }
+
     public function delete(User $user, Lesson $lesson)
     {
         return $user->ownsLesson($lesson);
