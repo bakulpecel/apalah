@@ -24,6 +24,7 @@ Route::namespace('Api')->group(function () {
 
     Route::prefix('/lesson')->group(function () {
         Route::get('', 'LessonController@index');
+        Route::get('/publish', 'LessonController@indexPublish');
         Route::get('/{slug}', 'LessonController@show');
         
         Route::middleware(['auth:api', 'lesson:api'])->group(function () {

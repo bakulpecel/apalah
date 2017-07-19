@@ -42,6 +42,31 @@ class LessonController extends Controller
             ->json($response, 200);
     }
 
+    public function indexPublish(Request $request)
+    {
+        if ($request->hasHeader('paginator')) {
+            $paginator = Lesson::where('status', 1)->paginate($request->paginator);
+            $lessons   = $paginator->getCollection();
+
+            $response = fractal()
+                ->collection($lessons, new LessonTransformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        $lessons = Lesson::where('status', 1)->get();
+
+        $response = fractal()
+            ->collection($lessons, new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
     public function show(Request $request, $slug)
     {
         $lesson = Lesson::where('slug', $slug)
