@@ -14,11 +14,22 @@ use Illuminate\Http\Request;
 */
 
 Route::namespace('Api')->group(function () {
-    Route::prefix('auth')->group(function () {
+    Route::prefix('/auth')->group(function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
         // Route::post('/activation', 'AuthController@postActivation');
         // Route::get('/activation', 'AuthController@getActivation');
         // Route::post('/reset_password', 'AuthController@resetPassword');
+    });
+
+    Route::prefix('/lesson')->group(function () {
+        // Route::get('', 'LessonController@index');
+        // Route::get('/{slug}', 'LessonController@show');
+        
+        Route::middleware('auth:api')->group(function () {
+            Route::post('', 'LessonController@store');
+            // Route::put('/{slug}', 'LessonController@update');
+            // Route::delete('/{slug}', 'LessonController@show');
+        });
     });
 });

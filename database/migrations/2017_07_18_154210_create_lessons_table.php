@@ -18,12 +18,13 @@ class CreateLessonsTable extends Migration
             $table->string('title');
             $table->string('slug')->unique()->index();
             $table->text('summary');
-            $table->integer('parts');
+            $table->integer('parts')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('url_source_code');
             $table->boolean('type');
+            $table->boolean('status');
             $table->integer('user_id')->unsigned();
-            $table->dateTime('published_at');
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
