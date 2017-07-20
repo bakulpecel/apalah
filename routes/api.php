@@ -28,7 +28,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/lesson/{slug}', 'LessonController@authShow');
 
         Route::get('/article', 'ArticleController@authIndex');
-        // Route::get('/article/{slug}', 'ArticleController@authShow');
+        Route::get('/article/{slug}', 'ArticleController@show');
     });
 
     Route::prefix('/guest')->middleware('auth:api')->group(function () {
@@ -38,10 +38,10 @@ Route::namespace('Api')->group(function () {
         Route::post('/lesson/{slug}', 'LessonController@update')->middleware('lesson:api');
         Route::delete('/lesson/{slug}', 'LessonController@destroy')->middleware('lesson:api');
 
-        // Route::get('/article', 'ArticleController@guestIndex');
-        // Route::get('/article/{slug}', 'ArticleController@guestShow');
+        Route::get('/article', 'ArticleController@guestIndex');
+        Route::get('/article/{slug}', 'ArticleController@show');
         Route::post('/article', 'ArticleController@store')->middleware('article:api');
-        // Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');
-        // Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
+        Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');
+        Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
     });
 });

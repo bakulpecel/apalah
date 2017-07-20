@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Lesson;
-use App\Models\PremiumUser;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -44,6 +42,23 @@ class User extends Authenticatable
         }
 
         if (auth()->id() === $lesson->user->id) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function ownsArticle(Article $article)
+    {
+        if (auth()->user()->role_id === 1) {
+            return true;
+        }
+
+        if (auth()->user()->role_id === 3) {
+            return true;
+        }
+
+        if (auth()->id() === $article->user->id) {
             return true;
         }
 

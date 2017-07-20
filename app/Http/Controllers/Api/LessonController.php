@@ -29,8 +29,8 @@ class LessonController extends Controller
 
             } else {
                 $paginator = Lesson::where('user_id', Auth::user()->id)
-                    ->orderBy('published_at', 'desc')
                     ->where('status', 1)
+                    ->orderBy('published_at', 'desc')
                     ->paginate($request->header('paginator'));
             }
 
@@ -51,13 +51,14 @@ class LessonController extends Controller
                 ->get();
         } else {
             $lessons = Lesson::where('user_id', Auth::user()->id)
-                ->orderBy('published_at', 'desc')
                 ->where('status', 1)
+                ->orderBy('published_at', 'desc')
                 ->get();
         }
 
         $response = fractal()
-            ->collection($lessons, new LessonTransformer)
+            ->collection($lessons)
+            ->transformWith(new LessonTransformer)
             ->toArray();
 
         return response()
@@ -132,6 +133,7 @@ class LessonController extends Controller
     public function authShow($slug)
     {
         $lesson = Lesson::where('slug', $slug)
+            ->where('status', 1)
             ->first();
 
         if (!$lesson) {
@@ -223,7 +225,7 @@ class LessonController extends Controller
             ->first();
 
         if (!$lesson) {
-            return $this->resJsonError('Artikel tidak ditemukan', 404);
+            return $this->resJsonError('Pelajaran tidak ditemukan', 404);
         }
 
         $this->authorize('update', $lesson);
@@ -269,7 +271,6 @@ class LessonController extends Controller
             'url_source_code' => $request->url_source_code ?? null,
             'type'            => $request->type,
             'status'          => $request->status,
-            'user_id'         => Auth::user()->id,
             'published_at'    => $published ?? null,
         ]);
 
@@ -303,13 +304,13 @@ class LessonController extends Controller
             ->first();
 
         if (!$lesson) {
-            return $this->resJsonError('Artikel tidak ditemukan', 404);
+            return $this->resJsonError('Pelajaran tidak ditemukan', 404);
         }
 
         $this->authorize('delete', $lesson);
 
         $lesson->delete();
 
-        return $this->resJsonSuccess('Artikel berhasil dihapus.', 200);
+        return $this->resJsonSuccess('Pelajaran berhasil dihapus.', 200);
     }
 }
