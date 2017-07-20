@@ -21,7 +21,7 @@ class LessonController extends Controller
     public function index(Request $request)
     {
         if ($request->hasHeader('paginator')) {
-            $paginator = Lesson::paginate($request->paginator);
+            $paginator = Lesson::paginate($request->header('paginator'));
             $lessons   = $paginator->getCollection();
 
             $response = fractal()
@@ -46,7 +46,7 @@ class LessonController extends Controller
     public function indexPublish(Request $request)
     {
         if ($request->hasHeader('paginator')) {
-            $paginator = Lesson::where('status', 1)->paginate($request->paginator);
+            $paginator = Lesson::where('status', 1)->paginate($request->header('paginator'));
             $lessons   = $paginator->getCollection();
 
             $response = fractal()
