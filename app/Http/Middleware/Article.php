@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Auth;
 use Closure;
 
-class Lesson
+class Article
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,6 @@ class Lesson
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::user()->role_id === 3) {
-            return response()
-                ->json('Unauthorize', 401);
-        }
-
         if (Auth::user()->role_id === 4) {
             return response()
                 ->json('Unauthorize', 401);

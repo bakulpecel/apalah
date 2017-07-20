@@ -20,7 +20,7 @@ class CreateLessonsTable extends Migration
             $table->text('summary');
             $table->integer('parts')->nullable();
             $table->string('thumbnail')->nullable();
-            $table->string('url_source_code');
+            $table->string('url_source_code')->nullable();
             $table->boolean('type');
             $table->boolean('status');
             $table->integer('user_id')->unsigned();

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Lesson;
+use App\Models\PremiumUser;
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 

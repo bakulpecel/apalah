@@ -19,11 +19,12 @@ class LessonsTableSeeder extends Seeder
                 'title'           => $title = $faker->sentence(),
                 'slug'            => str_replace(' ', '-', strtolower($title)),
                 'summary'         => $faker->paragraph(),
+                'thumbnail'       => time() . 'jpg',
                 'url_source_code' => 'http://github.com',
                 'type'            => rand(0, 1),
-                'status'          => 1,
+                'status'          => rand(0, 1),
                 'user_id'         => rand(1, 2),
-                'published_at'    => Carbon::now('Asia/Jakarta'),
+                'published_at'    => Carbon::now('Asia/Jakarta')->toDateTimeString(),
             ]);
         }
     }

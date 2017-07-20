@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Lesson;
 use App\Models\LessonCategory;
 use App\Models\LessonPart;
+use App\Models\PremiumUser;
 use App\Transformers\LessonTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,10 +19,57 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class LessonController extends Controller
 {
-    public function index(Request $request)
+    public function guestIndex(Request $request)
     {
         if ($request->hasHeader('paginator')) {
-            $paginator = Lesson::paginate($request->header('paginator'));
+            if (Auth::user()->role_id === 1) {
+                $paginator = Lesson::where('status', 1)
+                    ->orderBy('published_at', 'desc')
+                    ->paginate($request->header('paginator'));
+
+            } else {
+                $paginator = Lesson::where('user_id', Auth::user()->id)
+                    ->orderBy('published_at', 'desc')
+                    ->where('status', 1)
+                    ->paginate($request->header('paginator'));
+            }
+
+            $lessons = $paginator->getCollection();
+
+            $response = fractal()
+                ->collection($lessons, new LessonTransformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        if (Auth::user()->role_id === 1) {
+            $lessons = Lesson::where('status', 1)
+                ->orderBy('published_at', 'desc')
+                ->get();
+        } else {
+            $lessons = Lesson::where('user_id', Auth::user()->id)
+                ->orderBy('published_at', 'desc')
+                ->where('status', 1)
+                ->get();
+        }
+
+        $response = fractal()
+            ->collection($lessons, new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function authIndex(Request $request)
+    {
+        if ($request->hasHeader('paginator')) {
+            $paginator = Lesson::where('status', 1)
+                ->orderBy('published_at', 'desc')
+                ->paginate($request->header('paginator'));
             $lessons   = $paginator->getCollection();
 
             $response = fractal()
@@ -33,7 +81,9 @@ class LessonController extends Controller
                 ->json($response, 200);
         }
 
-        $lessons = Lesson::all();
+        $lessons = Lesson::where('status', 1)
+            ->orderBy('published_at', 'desc')
+            ->get();
 
         $response = fractal()
             ->collection($lessons, new LessonTransformer)
@@ -43,38 +93,53 @@ class LessonController extends Controller
             ->json($response, 200);
     }
 
-    public function indexPublish(Request $request)
-    {
-        if ($request->hasHeader('paginator')) {
-            $paginator = Lesson::where('status', 1)->paginate($request->header('paginator'));
-            $lessons   = $paginator->getCollection();
-
-            $response = fractal()
-                ->collection($lessons, new LessonTransformer)
-                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
-                ->toArray();
-
-            return response()
-                ->json($response, 200);
-        }
-
-        $lessons = Lesson::where('status', 1)->get();
-
-        $response = fractal()
-            ->collection($lessons, new LessonTransformer)
-            ->toArray();
-
-        return response()
-            ->json($response, 200);
-    }
-
-    public function show(Request $request, $slug)
+    public function guestShow($slug)
     {
         $lesson = Lesson::where('slug', $slug)
             ->first();
 
         if (!$lesson) {
             return $this->resJsonError('Pelajaran tidak ditemukan', 404);
+        }
+
+        $premiumUser = PremiumUser::where('user_id', Auth::user()->id)
+            ->where('end_at', '>', Carbon::today('Asia/Jakarta')->toDateTimeString())
+            ->first();
+
+        if ($lesson->type === 1) {
+            if (Auth()->user()->role_id === 1 || $premiumUser || $lesson->user_id === Auth::user()->id) {
+                $response = fractal()
+                    ->item($lesson)
+                    ->transformWith(new LessonTransformer)
+                    ->toArray();
+
+                return response()
+                    ->json($response, 200);            
+            } else {
+                return $this->resJsonError('Anda harus menjadi premium member!', 403);
+            }
+        }
+
+        $response = fractal()
+            ->item($lesson)
+            ->transformWith(new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function authShow($slug)
+    {
+        $lesson = Lesson::where('slug', $slug)
+            ->first();
+
+        if (!$lesson) {
+            return $this->resJsonError('Pelajaran tidak ditemukan', 404);
+        }
+
+        if ($lesson->type === 1) {
+            return $this->resJsonError('Anda harus menjadi premium member!', 403);
         }
 
         $response = fractal()
@@ -116,7 +181,7 @@ class LessonController extends Controller
         }
 
         if ($request->status == 1) {
-            $published = Carbon::now('Asia/Jakarta');
+            $published = Carbon::now('Asia/Jakarta')->toDateTimeString();
         }
 
         $lesson =  Lesson::create([
@@ -191,7 +256,8 @@ class LessonController extends Controller
         }
 
         if ($request->status == 1) {
-            $published = Carbon::now('Asia/Jakarta');
+            $published = Carbon::now('Asia/Jakarta')
+                ->toDateTimeString();
         }
 
         $lesson->update([

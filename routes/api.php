@@ -14,25 +14,34 @@ use Illuminate\Http\Request;
 */
 
 Route::namespace('Api')->group(function () {
+    Route::get('/image/{image}', 'ImageController@show')->name('image.show');
+    Route::get('/category', 'CategoryController@index')->name('category');
+
     Route::prefix('/auth')->group(function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
         // Route::post('/activation', 'AuthController@postActivation');
         // Route::get('/activation', 'AuthController@getActivation');
         // Route::post('/reset_password', 'AuthController@resetPassword');
+
+        Route::get('/lesson', 'LessonController@authIndex');
+        Route::get('/lesson/{slug}', 'LessonController@authShow');
+
+        Route::get('/article', 'ArticleController@authIndex');
+        // Route::get('/article/{slug}', 'ArticleController@authShow');
     });
 
-    Route::prefix('/lesson')->group(function () {
-        Route::get('', 'LessonController@index');
-        Route::get('/publish', 'LessonController@indexPublish');
-        Route::get('/{slug}', 'LessonController@show');
-        
-        Route::middleware(['auth:api', 'lesson:api'])->group(function () {
-            Route::post('', 'LessonController@store');
-            Route::post('/{slug}/update', 'LessonController@update');
-            Route::delete('/{slug}', 'LessonController@destroy');
+    Route::prefix('/guest')->middleware('auth:api')->group(function () {
+        Route::get('/lesson', 'LessonController@guestIndex');
+        Route::get('/lesson/{slug}', 'LessonController@guestShow');
+        Route::post('/lesson', 'LessonController@store')->middleware('lesson:api');
+        Route::post('/lesson/{slug}', 'LessonController@update')->middleware('lesson:api');
+        Route::delete('/lesson/{slug}', 'LessonController@destroy')->middleware('lesson:api');
 
-            Route::post('/{slug}', 'LessonPartController@store');
-        });
+        // Route::get('/article', 'ArticleController@guestIndex');
+        // Route::get('/article/{slug}', 'ArticleController@guestShow');
+        Route::post('/article', 'ArticleController@store')->middleware('article:api');
+        // Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');
+        // Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
     });
 });

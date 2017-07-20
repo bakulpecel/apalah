@@ -18,4 +18,9 @@ class LessonCategory extends Model
     ];
 
     public $timestamps = false;
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class)->select(['slug', 'category']);
+    }
 }

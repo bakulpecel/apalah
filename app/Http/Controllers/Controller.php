@@ -12,7 +12,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function resJsonSuccess($message, $code)
+    public function resJsonSuccess($message, $code = 200)
     {
         return response()->json([
             'success' => [
@@ -22,7 +22,7 @@ class Controller extends BaseController
         ], $code);
     }
 
-    public function resJsonError($message, $code)
+    public function resJsonError($message, $code = 200)
     {
         return response()->json([
             'error' => [
