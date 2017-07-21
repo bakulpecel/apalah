@@ -17,6 +17,7 @@ class LessonPartController extends Controller
     public function guestIndex($slug)
     {
         $lesson = Lesson::where('slug', $slug)
+            ->where('status', 1)
             ->first();
 
         if (!$lesson) {
@@ -37,6 +38,40 @@ class LessonPartController extends Controller
 
         $lessonPart = LessonPart::where('lesson_id', $lesson->id)
             ->get();
+
+        if ($lessonPart) {
+            return $this->resJsonError('Belum ada kurikulum', 404);
+        }
+
+        $response = fractal()
+            ->collection($lessonPart)
+            ->transformWith(new LessonPartTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function authIndex($slug)
+    {
+        $lesson = Lesson::where('slug', $slug)
+            ->where('status', 1)
+            ->first();
+
+        if (!$lesson) {
+            return $this->resJsonError('Pelajaran tidak ditemukan', 404);
+        }
+
+        if ($lesson->type === 1) {
+            return $this->resJsonError('Anda harus menjadi premium member');
+        }
+
+        $lessonPart = LessonPart::where('lesson_id', $lesson->id)
+            ->get();
+
+        if (!$lessonPart) {
+            return $this->resJsonError('Belum ada kurikulum', 404);
+        }
 
         $response = fractal()
             ->collection($lessonPart)
@@ -74,6 +109,37 @@ class LessonPartController extends Controller
 
         if (!$lessonPart) {
             return $this->resJsonError('Kurikulum tidak ditemukan', 404);
+        }
+
+        $response = fractal()
+            ->item($lessonPart)
+            ->transformWith(new LessonPartTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function authShow($slug, $slugPart)
+    {
+        $lesson = Lesson::where('slug', $slug)
+            ->where('status', 1)
+            ->first();
+
+        if (!$lesson) {
+            return $this->resJsonError('Pelajaran tidak ditemukan', 404);
+        }
+
+        if ($lesson->type === 1) {
+            return $this->resJsonError('Anda harus menjadi premium member');
+        }
+
+        $lessonPart = LessonPart::where('lesson_id', $lesson->id)
+            ->where('slug', $slugPart)
+            ->first();
+
+        if (!$lessonPart) {
+            return $this->resJsonError('Belum ada kurikulum', 404);
         }
 
         $response = fractal()

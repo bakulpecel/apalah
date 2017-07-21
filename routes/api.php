@@ -27,6 +27,9 @@ Route::namespace('Api')->group(function () {
         Route::get('/lesson', 'LessonController@authIndex');
         Route::get('/lesson/{slug}', 'LessonController@authShow');
 
+        Route::get('/lesson/{slug}/part', 'LessonPartController@authIndex');
+        Route::get('/lesson/{slug}/{slugPart}', 'LessonPartController@authShow');
+
         Route::get('/article', 'ArticleController@authIndex');
         Route::get('/article/{slug}', 'ArticleController@show');
     });

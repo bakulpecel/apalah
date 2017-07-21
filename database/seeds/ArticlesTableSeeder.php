@@ -14,7 +14,7 @@ class ArticlesTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < 100; $i++) { 
+        for ($i = 0; $i < 10; $i++) { 
             DB::table('articles')->insert([
                 'title'        => $title = $faker->sentence(),
                 'slug'         => str_replace(' ', '-', strtolower($title)),
