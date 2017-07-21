@@ -38,6 +38,12 @@ Route::namespace('Api')->group(function () {
         Route::post('/lesson/{slug}', 'LessonController@update')->middleware('lesson:api');
         Route::delete('/lesson/{slug}', 'LessonController@destroy')->middleware('lesson:api');
 
+        Route::get('/lesson/{slug}/part', 'LessonPartController@guestIndex');
+        Route::get('/lesson/{slug}/{slugPart}', 'LessonPartController@guestShow');
+        Route::post('/lesson/{slug}/part', 'LessonPartController@store')->middleware('lesson:api');
+        Route::put('/lesson/{slug}/{slugPart}', 'LessonPartController@update')->middleware('lesson:api');
+        Route::delete('/lesson/{slug}/{slugPart}', 'LessonPartController@destroy')->middleware('lesson:api');
+
         Route::get('/article', 'ArticleController@guestIndex');
         Route::get('/article/{slug}', 'ArticleController@show');
         Route::post('/article', 'ArticleController@store')->middleware('article:api');

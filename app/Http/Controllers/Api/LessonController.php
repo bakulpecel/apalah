@@ -103,24 +103,6 @@ class LessonController extends Controller
             return $this->resJsonError('Pelajaran tidak ditemukan', 404);
         }
 
-        $premiumUser = PremiumUser::where('user_id', Auth::user()->id)
-            ->where('end_at', '>', Carbon::today('Asia/Jakarta')->toDateTimeString())
-            ->first();
-
-        if ($lesson->type === 1) {
-            if (Auth()->user()->role_id === 1 || $premiumUser || $lesson->user_id === Auth::user()->id) {
-                $response = fractal()
-                    ->item($lesson)
-                    ->transformWith(new LessonTransformer)
-                    ->toArray();
-
-                return response()
-                    ->json($response, 200);            
-            } else {
-                return $this->resJsonError('Anda harus menjadi premium member!', 403);
-            }
-        }
-
         $response = fractal()
             ->item($lesson)
             ->transformWith(new LessonTransformer)
@@ -138,10 +120,6 @@ class LessonController extends Controller
 
         if (!$lesson) {
             return $this->resJsonError('Pelajaran tidak ditemukan', 404);
-        }
-
-        if ($lesson->type === 1) {
-            return $this->resJsonError('Anda harus menjadi premium member!', 403);
         }
 
         $response = fractal()

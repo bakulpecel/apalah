@@ -20,8 +20,8 @@ class UsersTableSeeder extends Seeder
                 'password'   => bcrypt('123456'),
                 'role_id'    => 1,
                 'active'     => 1,
-                'created_at' => Carbon::now('Asia/Jakarta'),
-                'updated_at' => Carbon::now('Asia/Jakarta'),
+                'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
             ],
             [
                 'name'       => 'Educator',
@@ -30,8 +30,8 @@ class UsersTableSeeder extends Seeder
                 'password'   => bcrypt('123456'),
                 'role_id'    => 2,
                 'active'     => 1,
-                'created_at' => Carbon::now('Asia/Jakarta'),
-                'updated_at' => Carbon::now('Asia/Jakarta'),
+                'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
             ],
             [
                 'name'       => 'Moderator',
@@ -40,8 +40,8 @@ class UsersTableSeeder extends Seeder
                 'password'   => bcrypt('123456'),
                 'role_id'    => 3,
                 'active'     => 1,
-                'created_at' => Carbon::now('Asia/Jakarta'),
-                'updated_at' => Carbon::now('Asia/Jakarta'),
+                'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
             ],
             [
                 'name'       => 'User',
@@ -50,8 +50,8 @@ class UsersTableSeeder extends Seeder
                 'password'   => bcrypt('123456'),
                 'role_id'    => 4,
                 'active'     => 1,
-                'created_at' => Carbon::now('Asia/Jakarta'),
-                'updated_at' => Carbon::now('Asia/Jakarta'),
+                'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
             ],
         ]);
     }

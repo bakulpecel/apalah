@@ -14,6 +14,7 @@ class CreateLessonPartsTable extends Migration
     public function up()
     {
         Schema::create('lesson_parts', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('lesson_id')->unsigned();
             $table->string('title');
             $table->string('slug')->unique()->index();
