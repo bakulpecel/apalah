@@ -123,4 +123,46 @@ class AuthController extends Controller
 
         return $this->resJsonSuccess('Berhasil mengaktivasi akun.', 200);
     }
+
+    public function sendActivation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code'    => 400,
+                    'message' => $validator->errors(),
+                ],
+            ], 400);
+        }
+
+        $user = User::where('email', $request->email)
+            ->where('active', 0)
+            ->first();
+
+        if (!$user) {
+            return $this->resJsonError('Gagal mengirim token!. Akun sudah diaktivasi atau Akun tidak terdaftar!.', 401);
+        }
+
+        $userActivation = UserActivation::updateOrCreate(['email' => $user->email], [
+            'user_id'    => $user->id,
+            'email'      => $user->email,
+            'token'      => str_random(60),
+            'expired_at' => Carbon::now('Asia/Jakarta')->addDay(1)->toDateTimeString(),
+            'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
+        ]);
+
+        $data = $user->toArray();
+        $data['token'] = $userActivation->token;
+
+        Mail::send('email.user_activation', $data, function ($message) use ($data) {
+            $message->to($data['email']);
+            $message->subject('Konfirmasi registrasi akun');
+        });
+
+        return $this->resJsonSuccess('Email aktivasi berhasil dikirim. Silakan cek email anda untuk aktivasi akun.', 201);
+    }
 }

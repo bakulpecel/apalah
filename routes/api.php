@@ -22,7 +22,7 @@ Route::namespace('Api')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
-        // Route::post('/activation', 'AuthController@postActivation');
+        Route::post('/activation', 'AuthController@sendActivation');
         Route::get('/activation', 'AuthController@activation');
         // Route::post('/reset_password', 'AuthController@resetPassword');
 
