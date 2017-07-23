@@ -165,4 +165,40 @@ class AuthController extends Controller
 
         return $this->resJsonSuccess('Email aktivasi berhasil dikirim. Silakan cek email anda untuk aktivasi akun.', 201);
     }
+
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code'    => 400,
+                    'message' => $validator->errors(),
+                ],
+            ], 400);
+        }
+
+        $user = User::where('email', $request->email)
+            ->first();
+        
+        if (!$user) {
+            return $this->resJsonError('Email tidak terdaftar!.', 404);
+        }
+
+        $user->password = bcrypt($newPassword = str_random(8));
+        $user->save();
+
+        $data = $user->toArray();
+        $data['password'] = $newPassword;
+
+        Mail::send('email.password_reset', $data, function ($message) use ($data) {
+            $message->to($data['email']);
+            $message->subject('Reset password akun');
+        });
+
+        return $this->resJsonSuccess('Password berhasil direset. Silakan cek email anda!.', 200);
+    }
 }

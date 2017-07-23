@@ -18,7 +18,7 @@ class UserTransformer extends TransformerAbstract
             'name'       => $user->name,
             'username'   => $user->username,
             'email'      => $user->email,
-            'photo'      => $user->photo,
+            'photo'      => route('image.show', ['image' => $user->photo ?? 'default.jpg']),
             'role'       => $user->role->role,
             'active'     => $user->active ? true : false,
             'registered' => $user->created_at->diffForHumans(),

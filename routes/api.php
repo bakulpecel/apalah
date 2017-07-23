@@ -24,7 +24,7 @@ Route::namespace('Api')->group(function () {
         Route::post('/login', 'AuthController@login');
         Route::post('/activation', 'AuthController@sendActivation');
         Route::get('/activation', 'AuthController@activation');
-        // Route::post('/reset_password', 'AuthController@resetPassword');
+        Route::post('/reset_password', 'AuthController@resetPassword');
 
         Route::get('/lesson', 'LessonController@authIndex');
         Route::get('/lesson/{slug}', 'LessonController@authShow');
