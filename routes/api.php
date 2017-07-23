@@ -16,12 +16,14 @@ use Illuminate\Http\Request;
 Route::namespace('Api')->group(function () {
     Route::get('/image/{image}', 'ImageController@show')->name('image.show');
     Route::get('/category', 'CategoryController@index')->name('category');
+    Route::get('/category/article', 'CategoryController@filterArticle');
+    Route::get('/category/lesson', 'CategoryController@filterLesson');
 
     Route::prefix('/auth')->group(function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
         // Route::post('/activation', 'AuthController@postActivation');
-        // Route::get('/activation', 'AuthController@getActivation');
+        Route::get('/activation', 'AuthController@activation');
         // Route::post('/reset_password', 'AuthController@resetPassword');
 
         Route::get('/lesson', 'LessonController@authIndex');

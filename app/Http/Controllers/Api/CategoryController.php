@@ -8,6 +8,7 @@ use App\Models\ArticleCategory;
 use App\Models\Category;
 use App\Models\Lesson;
 use App\Models\LessonCategory;
+use App\Transformers\ArticleTransformer;
 use App\Transformers\ArticleCategoryTransformer;
 use App\Transformers\CategoryTransformer;
 use App\Transformers\LessonCategoryTransfomer;
@@ -66,5 +67,15 @@ class CategoryController extends Controller
 
         return response()
             ->json($response, 200);
+    }
+
+    public function filterArticle()
+    {
+        // 
+    }
+
+    public function filterLesson()
+    {
+        // 
     }
 }

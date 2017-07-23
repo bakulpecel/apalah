@@ -42,10 +42,11 @@ class AuthController extends Controller
         ]);
 
         $userActivation = UserActivation::create([
+            'user_id'    => $user->id,
             'email'      => $user->email,
             'token'      => str_random(60),
-            'expired_at' => Carbon::now('Asia/Jakarta')->addDay(1),
-            'created_at' => Carbon::now('Asia/Jakarta'),
+            'expired_at' => Carbon::now('Asia/Jakarta')->addDay(1)->toDateTimeString(),
+            'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
         ]);
 
         $data = $user->toArray();
@@ -99,5 +100,27 @@ class AuthController extends Controller
 
         return response()
             ->json($response, 200);
+    }
+
+    public function activation(Request $request)
+    {
+        if (!$request->has('token')) {
+            return $this->resJsonError('Tidak dapat mengaktivasi akun!.', 401);
+        }
+
+        $userActivation = UserActivation::where('token', $request->token)
+            ->first();
+
+        if (!$userActivation) {
+            return $this->resJsonError('Gagal aktivasi akun!.', 401);
+        }
+
+        User::where('email', $userActivation->email)->update([
+            'active' => 1,
+        ]);
+
+        $userActivation->delete();
+
+        return $this->resJsonSuccess('Berhasil mengaktivasi akun.', 200);
     }
 }

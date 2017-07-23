@@ -14,10 +14,13 @@ class CreateUserActivationsTable extends Migration
     public function up()
     {
         Schema::create('user_activations', function (Blueprint $table) {
-            $table->string('email')->index();
+            $table->integer('user_id')->unsigned();
+            $table->string('email')->unique()->index();
             $table->string('token');
             $table->dateTime('expired_at')->nullable();
             $table->timestamp('created_at')->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
