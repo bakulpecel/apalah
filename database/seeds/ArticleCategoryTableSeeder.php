@@ -14,7 +14,7 @@ class ArticleCategoryTableSeeder extends Seeder
         for ($i = 0; $i < 100; $i++) { 
             DB::table('article_category')->insert([
                 'article_id'  => rand(1, 10),
-                'category_id' => rand(1, 100),
+                'category_id' => rand(1, 50),
             ]);
         }
     }

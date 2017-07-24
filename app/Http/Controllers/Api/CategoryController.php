@@ -69,12 +69,12 @@ class CategoryController extends Controller
             ->json($response, 200);
     }
 
-    public function filterArticle()
+    public function filterArticle(Request $request)
     {
         // 
     }
 
-    public function filterLesson()
+    public function filterLesson(Request $request)
     {
         // 
     }

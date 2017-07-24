@@ -38,6 +38,7 @@ Route::namespace('Api')->group(function () {
 
     Route::prefix('/guest')->middleware('auth:api')->group(function () {
         Route::get('/lesson', 'LessonController@guestIndex');
+        Route::get('/lesson/draft', 'LessonController@guestIndexDraft');
         Route::get('/lesson/{slug}', 'LessonController@guestShow');
         Route::post('/lesson', 'LessonController@store')->middleware('lesson:api');
         Route::post('/lesson/{slug}', 'LessonController@update')->middleware('lesson:api');
@@ -50,6 +51,7 @@ Route::namespace('Api')->group(function () {
         Route::delete('/lesson/{slug}/{slugPart}', 'LessonPartController@destroy')->middleware('lesson:api');
 
         Route::get('/article', 'ArticleController@guestIndex');
+        Route::get('/article/draft', 'ArticleController@guestIndexDraft');
         Route::get('/article/{slug}', 'ArticleController@show');
         Route::post('/article', 'ArticleController@store')->middleware('article:api');
         Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');

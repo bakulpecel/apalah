@@ -65,6 +65,52 @@ class LessonController extends Controller
             ->json($response, 200);
     }
 
+    public function guestIndexDraft(Request $request)
+    {
+        if ($request->hasHeader('paginator')) {
+            if (Auth::user()->role_id === 1) {
+                $paginator = Lesson::where('status', 0)
+                    ->orderBy('published_at', 'desc')
+                    ->paginate($request->header('paginator'));
+
+            } else {
+                $paginator = Lesson::where('user_id', Auth::user()->id)
+                    ->where('status', 0)
+                    ->orderBy('published_at', 'desc')
+                    ->paginate($request->header('paginator'));
+            }
+
+            $lessons = $paginator->getCollection();
+
+            $response = fractal()
+                ->collection($lessons, new LessonTransformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        if (Auth::user()->role_id === 1) {
+            $lessons = Lesson::where('status', 0)
+                ->orderBy('published_at', 'desc')
+                ->get();
+        } else {
+            $lessons = Lesson::where('user_id', Auth::user()->id)
+                ->where('status', 0)
+                ->orderBy('published_at', 'desc')
+                ->get();
+        }
+
+        $response = fractal()
+            ->collection($lessons)
+            ->transformWith(new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
     public function authIndex(Request $request)
     {
         if ($request->hasHeader('paginator')) {

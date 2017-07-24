@@ -14,7 +14,7 @@ class LessonCategoryTableSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) { 
             DB::table('lesson_category')->insert([
                 'lesson_id'   => rand(1, 10),
-                'category_id' => rand(1, 100),
+                'category_id' => rand(1, 50),
             ]);
         }
     }

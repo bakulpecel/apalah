@@ -62,6 +62,51 @@ class ArticleController extends Controller
             ->json($response, 200);
     }
 
+    public function guestIndexDraft(Request $request)
+    {
+        if ($request->hasHeader('paginator')) {
+            if (Auth::user()->role_id === 1 || Auth::user()->role_id === 3) {
+                $paginator = Article::where('status', 0)
+                    ->orderBy('published_at', 'desc')
+                    ->paginate($request->header('paginator'));
+            } else {
+                $paginator = Article::where('user_id', Auth::user()->id)
+                    ->where('status', 0)
+                    ->orderBy('published_at', 'desc')
+                    ->paginate($request->header('paginator'));
+            }
+
+            $articles = $paginator->getCollection();
+
+            $response = fractal()
+                ->collection($articles, new ArticleTransformer)
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        if (Auth::user()->role_id === 1 || Auth::user()->role_id === 3) {
+            $articles = Article::where('status', 0)
+                ->orderBy('published_at', 'desc')
+                ->get();
+        } else {
+            $articles = Article::where('user_id', Auth::user()->id)
+                ->where('status', 0)
+                ->orderBy('published_at', 'desc')
+                ->get();
+        }
+
+        $response = fractal()
+            ->collection($articles)
+            ->transformWith(new ArticleTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
     public function authIndex(Request $request)
     {
         if ($request->hasHeader('paginator')) {

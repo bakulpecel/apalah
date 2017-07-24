@@ -13,7 +13,7 @@ class CategoriesTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < 100; $i++) { 
+        for ($i = 0; $i < 50; $i++) { 
             DB::table('categories')->insert([
                 'category' => $category = ucwords($faker->unique()->word),
                 'slug'     => str_replace(' ', '-', strtolower($category))
