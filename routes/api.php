@@ -59,7 +59,7 @@ Route::namespace('Api')->group(function () {
         Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
 
         Route::get('/user', 'UserController@index')->middleware('user:api');
-        Route::get('/user/{username}', 'UserController@show');
+        Route::get('/user/{username}', 'UserController@show')->middleware('user:api');
         Route::delete('/user/{username}', 'UserController@destroy')->middleware('user:api');
 
         Route::get('/profile', 'UserController@profile');
