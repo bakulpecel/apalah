@@ -59,5 +59,7 @@ Route::namespace('Api')->group(function () {
         Route::post('/article', 'ArticleController@store')->middleware('article:api');
         Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');
         Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
+
+        Route::get('/profile', 'UserController@profile');
     });
 });
