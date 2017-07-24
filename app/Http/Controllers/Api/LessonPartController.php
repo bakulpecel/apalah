@@ -39,7 +39,7 @@ class LessonPartController extends Controller
         $lessonPart = LessonPart::where('lesson_id', $lesson->id)
             ->get();
 
-        if ($lessonPart) {
+        if (!$lessonPart) {
             return $this->resJsonError('Belum ada kurikulum', 404);
         }
 
