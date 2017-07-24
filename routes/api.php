@@ -20,8 +20,6 @@ Route::namespace('Api')->group(function () {
     Route::get('/category/article', 'CategoryController@filterArticle');
     Route::get('/category/lesson', 'CategoryController@filterLesson');
 
-    Route::get('/user/{username}', 'UserController@show');
-
     Route::prefix('/auth')->group(function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
@@ -61,6 +59,8 @@ Route::namespace('Api')->group(function () {
         Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
 
         Route::get('/user', 'UserController@index')->middleware('user:api');
+        Route::get('/user/{username}', 'UserController@show');
+        Route::delete('/user/{username}', 'UserController@destroy')->middleware('user:api');
 
         Route::get('/profile', 'UserController@profile');
     });

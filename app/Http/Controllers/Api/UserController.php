@@ -75,4 +75,20 @@ class UserController extends Controller
         return response()
             ->json($response, 200);
     }
+
+    public function destroy($username)
+    {   
+        $username = substr($username, 1);
+        
+        $user = User::where('username', $username)
+            ->first();
+
+        if (!$user) {
+            return $this->resJsonError('Tidak menemukan pengguna yang akan dihapus!.', 404);
+        }
+
+        $user->delete();
+
+        return $this->resJsonSuccess('Berhasil menghapus akun.', 200);
+    }
 }
