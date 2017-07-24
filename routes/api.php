@@ -60,6 +60,8 @@ Route::namespace('Api')->group(function () {
         Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');
         Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
 
+        Route::get('/user', 'UserController@index')->middleware('user:api');
+
         Route::get('/profile', 'UserController@profile');
     });
 });
