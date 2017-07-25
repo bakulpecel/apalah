@@ -8,6 +8,7 @@ use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -109,6 +110,40 @@ class UserController extends Controller
 
         return $this->resJsonSuccess('Akun berhasil diperbarui.', 200);
 
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password'         => 'required|min:6:max:32',
+            'new_password'         => 'required|min:6:max:32',
+            'confirm_new_password' => 'required|min:6:max:32',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code'    => 400,
+                    'message' => $validator->errors(),
+                ],
+            ], 400);
+        }
+
+        if ($request->new_password != $request->confirm_new_password) {
+            return $this->resJsonError('Password baru dan Password konfirmasi tidak sama!.', 400);
+        }
+
+        $user = User::find(Auth::user()->id);
+
+        if (!Hash::check($request->old_password, Auth::user()->password)) {
+            return $this->resJsonError('Password lama anda salah!.', 400);
+        }
+
+        $user->update([
+            'password' => bcrypt($request->new_password),
+        ]);
+
+        return $this->resJsonSuccess('Password berhasil diupdate.', 200);
     }
 
     public function destroy($username)
