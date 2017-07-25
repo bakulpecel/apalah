@@ -63,5 +63,6 @@ Route::namespace('Api')->group(function () {
         Route::delete('/user/{username}', 'UserController@destroy')->middleware('user:api');
 
         Route::get('/profile', 'UserController@profile');
+        Route::post('/profile', 'UserController@update');
     });
 });

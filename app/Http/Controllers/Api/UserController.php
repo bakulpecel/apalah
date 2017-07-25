@@ -7,6 +7,9 @@ use App\Models\User;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class UserController extends Controller
@@ -74,6 +77,38 @@ class UserController extends Controller
 
         return response()
             ->json($response, 200);
+    }
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'     => 'required|max:20',
+            'photo'    => 'image|mimes:jpeg,jpg,png|max:512',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code'    => 400,
+                    'message' => $validator->errors(),
+                ],
+            ], 400);
+        }
+
+        if ($request->hasFile('photo')) {
+            Storage::disk('local')
+                ->put('avatar/' . $imageName = time() . '.' . $request->photo->getClientOriginalExtension(),
+                    File::get($request->file('photo'))
+                );
+        }
+
+        $user = User::find(Auth::user()->id)->update([
+            'name'     => $request->name,
+            'photo'    => $imageName,
+        ]);
+
+        return $this->resJsonSuccess('Akun berhasil diperbarui.', 200);
+
     }
 
     public function destroy($username)
