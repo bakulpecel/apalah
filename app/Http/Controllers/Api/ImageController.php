@@ -12,6 +12,7 @@ class ImageController extends Controller
     {
         $thumbnailLesson = storage_path('app/thumbnail/lessons/') . $image;
         $thumbnailArticle = storage_path('app/thumbnail/articles/') . $image;
+        $avatar = storage_path('app/avatar/') . $image;
 
         if (!File::exists($thumbnailLesson) || !File::exists($thumbnailArticle)) {
             $default = storage_path('app/') . 'default.jpg';
@@ -27,6 +28,11 @@ class ImageController extends Controller
         if (File::exists($thumbnailArticle)) {
             $image = File::get($thumbnailArticle);
             $type = File::mimeType($thumbnailArticle);
+        }
+
+        if (File::exists($avatar)) {
+            $image = File::get($avatar);
+            $type = File::mimeType($avatar);
         }
 
         return response()
