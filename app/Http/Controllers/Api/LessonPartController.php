@@ -111,6 +111,9 @@ class LessonPartController extends Controller
             return $this->resJsonError('Kurikulum tidak ditemukan', 404);
         }
 
+        $lessonPart->views = $lessonPart->views + 1;
+        $lessonPart->save();
+
         $response = fractal()
             ->item($lessonPart)
             ->transformWith(new LessonPartTransformer)
@@ -141,6 +144,9 @@ class LessonPartController extends Controller
         if (!$lessonPart) {
             return $this->resJsonError('Belum ada kurikulum', 404);
         }
+
+        $lessonPart->views = $lessonPart->views + 1;
+        $lessonPart->save();
 
         $response = fractal()
             ->item($lessonPart)
@@ -182,6 +188,9 @@ class LessonPartController extends Controller
             'url_video' => $request->url_video,
             'lesson_id' => $lesson->id,
         ]);
+
+        $lesson->parts = $lesson->parts + 1;
+        $lesson->save();
 
         $response = fractal()
             ->item($lessonPart)
@@ -260,6 +269,9 @@ class LessonPartController extends Controller
         $this->authorize('delete', $lesson);
 
         $lessonPart->delete();
+
+        $lesson->parts = $lesson->parts - 1;
+        $lesson->save();
 
         return $this->resJsonSuccess('Kurikulum berhasil dihapus.', 200);
     }
