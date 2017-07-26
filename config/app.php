@@ -177,6 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
+        Madcoda\Youtube\YoutubeServiceProviderLaravel5::class,
 
     ],
 
@@ -227,6 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Fractal' => Spatie\Fractal\FractalFacade::class,
+        'Youtube' => Madcoda\Youtube\Facades\Youtube::class,
 
     ],
 

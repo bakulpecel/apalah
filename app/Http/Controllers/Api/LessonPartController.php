@@ -8,9 +8,12 @@ use App\Models\LessonPart;
 use App\Models\PremiumUser;
 use App\Transformers\LessonPartTransformer;
 use Carbon\Carbon;
+use DateInterval;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Madcoda\Youtube\Facades\Youtube;
 
 class LessonPartController extends Controller
 {
@@ -182,10 +185,17 @@ class LessonPartController extends Controller
             ], 400);
         }
 
+        $videoUrl = $request->url_video;
+        $queryString = [];
+        parse_str(parse_url($videoUrl, PHP_URL_QUERY), $queryString);
+        $videoId = $queryString['v'];
+        $duration = new DateInterval(Youtube::getVideoInfo($videoId)->contentDetails->duration);
+
         $lessonPart = LessonPart::create([
             'title'     => $request->title,
             'slug'      => str_replace(' ', '-', strtolower($request->title . ' ' . str_random(8))),
             'url_video' => $request->url_video,
+            'duration'  => $duration->format('%H:%I:%S'),
             'lesson_id' => $lesson->id,
         ]);
 
@@ -234,10 +244,17 @@ class LessonPartController extends Controller
             ], 400);
         }
 
+        $videoUrl = $request->url_video;
+        $queryString = [];
+        parse_str(parse_url($videoUrl, PHP_URL_QUERY), $queryString);
+        $videoId = $queryString['v'];
+        $duration = new DateInterval(Youtube::getVideoInfo($videoId)->contentDetails->duration);
+
         $lessonPart->update([
             'title'     => $request->title,
             'slug'      => str_replace(' ', '-', strtolower($request->title . ' ' . str_random(8))),
             'url_video' => $request->url_video,
+            'duration'  => $duration->format('%H:%I:%S'),
         ]);
 
         $response = fractal()
