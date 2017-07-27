@@ -72,19 +72,14 @@ class CategoryController extends Controller
 
     public function filterArticle(Request $request)
     {
-        // 
-    }
-
-    public function filterLesson(Request $request)
-    {
         if (!$request->has('category')) {
-            $lessonCategory = LessonCategory::distinct()
+            $articleCategory = ArticleCategory::distinct()
                 ->get();
 
             $categories = [];
 
-            foreach ($lessonCategory as $keyLC => $valueLC) {
-                $categories[] = Category::find($valueLC->category_id);
+            foreach ($articleCategory as $keyAC => $valueAC) {
+                $categories[] = Category::find($valueAC->category_id);
             }
 
             if (!$categories) {
@@ -104,11 +99,74 @@ class CategoryController extends Controller
             ->first();
 
         if (!$category) {
-            return $this->resJsonError('Tidak diteukan category!.', 404);
+            return $this->resJsonError('Tidak ditemukan kategori!.', 404);
+        }
+
+        $articleCategory = ArticleCategory::where('category_id', $category->id)
+            ->get();
+
+        if (!$articleCategory) {
+            return $this->resJsonError('Tidak ditemukan artikel dengan kategori '. $category->category, 404);
+        }
+
+        $articles = [];
+
+        foreach ($articleCategory as $valueAC) {
+            $articles[] = Article::where('status', 1)
+                ->find($valueAC->article_id);
+        }
+
+        if (!$articles) {
+            return $this->resJsonError('Tidak ditemukan artikel dengan kategori '. $category->category, 404);
+        }
+
+        $response = fractal()
+            ->collection($articles)
+            ->transformWith(new ArticleTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function filterLesson(Request $request)
+    {
+        if (!$request->has('category')) {
+            $lessonCategory = LessonCategory::distinct()
+                ->get();
+
+            $categories = [];
+
+            foreach ($lessonCategory as $keyLC => $valueLC) {
+                $categories[] = Category::find($valueLC->category_id);
+            }
+
+            if (!$categories) {
+                return $this->resJsonError('Tidak ditemukan kategori untuk pelajaran!.', 404);
+            }
+
+            $response = fractal()
+                ->collection($categories)
+                ->transformWith(new CategoryTransformer)
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        $category = Category::where('slug', $request->category)
+            ->first();
+
+        if (!$category) {
+            return $this->resJsonError('Tidak ditemukan kategory!.', 404);
         }
 
         $lessonCategory = LessonCategory::where('category_id', $category->id)
             ->get();
+
+        if (!$lessonCategory) {
+            return $this->resJsonError('Tidak ditemukan pelajaran dengan kategori '. $category->category, 404);
+        }
 
         $lessons = [];
 
@@ -118,7 +176,7 @@ class CategoryController extends Controller
         }
 
         if (!$lessons) {
-            return $this->resJsonError('Tidak ditemukan artikel dengan kategori '. $category->category, 404);
+            return $this->resJsonError('Tidak ditemukan pelajaran dengan kategori '. $category->category, 404);
         }
 
         $response = fractal()
