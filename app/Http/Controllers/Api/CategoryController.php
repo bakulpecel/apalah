@@ -11,7 +11,8 @@ use App\Models\LessonCategory;
 use App\Transformers\ArticleTransformer;
 use App\Transformers\ArticleCategoryTransformer;
 use App\Transformers\CategoryTransformer;
-use App\Transformers\LessonCategoryTransfomer;
+use App\Transformers\LessonTransformer;
+use App\Transformers\LessonCategoryTransformer;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -31,7 +32,7 @@ class CategoryController extends Controller
 
             $response = fractal()
                 ->collection($lessonCategory)
-                ->transformWith(new LessonCategoryTransfomer)
+                ->transformWith(new LessonCategoryTransformer)
                 ->toArray();
 
             return response()
@@ -76,6 +77,56 @@ class CategoryController extends Controller
 
     public function filterLesson(Request $request)
     {
-        // 
+        if (!$request->has('category')) {
+            $lessonCategory = LessonCategory::distinct()
+                ->get();
+
+            $categories = [];
+
+            foreach ($lessonCategory as $keyLC => $valueLC) {
+                $categories[] = Category::find($valueLC->category_id);
+            }
+
+            if (!$categories) {
+                return $this->resJsonError('Tidak ditemukan kategori untuk artikel!.', 404);
+            }
+
+            $response = fractal()
+                ->collection($categories)
+                ->transformWith(new CategoryTransformer)
+                ->toArray();
+
+            return response()
+                ->json($response, 200);
+        }
+
+        $category = Category::where('slug', $request->category)
+            ->first();
+
+        if (!$category) {
+            return $this->resJsonError('Tidak diteukan category!.', 404);
+        }
+
+        $lessonCategory = LessonCategory::where('category_id', $category->id)
+            ->get();
+
+        $lessons = [];
+
+        foreach ($lessonCategory as $valueLC) {
+            $lessons[] = Lesson::where('status', 1)
+                ->find($valueLC->lesson_id);
+        }
+
+        if (!$lessons) {
+            return $this->resJsonError('Tidak ditemukan artikel dengan kategori '. $category->category, 404);
+        }
+
+        $response = fractal()
+            ->collection($lessons)
+            ->transformWith(new LessonTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
     }
 }

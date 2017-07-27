@@ -5,7 +5,7 @@ namespace App\Transformers;
 use App\Models\LessonCategory;
 use League\Fractal\TransformerAbstract;
 
-class LessonCategoryTransfomer extends TransformerAbstract
+class LessonCategoryTransformer extends TransformerAbstract
 {
     /**
      * A Fractal transformer.
