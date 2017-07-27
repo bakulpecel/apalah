@@ -84,6 +84,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required|max:20',
+            'phone_number' => 'numeric',
             'photo'    => 'image|mimes:jpeg,jpg,png|max:512',
         ]);
 
@@ -105,7 +106,8 @@ class UserController extends Controller
 
         $user = User::find(Auth::user()->id)->update([
             'name'     => $request->name,
-            'photo'    => $imageName,
+            'phone_number' => $request->phone_number,
+            'photo'    => $imageName ?? null,
         ]);
 
         return $this->resJsonSuccess('Akun berhasil diperbarui.', 200);

@@ -12,12 +12,15 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        $faker =  Faker\Factory::create();
+
         DB::table('users')->insert([
             [
                 'name'       => 'Admin',
                 'username'   => 'admin',
                 'email'      => 'admin@mail.com',
                 'password'   => bcrypt('123456'),
+                'phone_number' => $faker->e164PhoneNumber,
                 'role_id'    => 1,
                 'active'     => 1,
                 'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
@@ -28,6 +31,7 @@ class UsersTableSeeder extends Seeder
                 'username'   => 'educator',
                 'email'      => 'educator@mail.com',
                 'password'   => bcrypt('123456'),
+                'phone_number' => $faker->e164PhoneNumber,
                 'role_id'    => 2,
                 'active'     => 1,
                 'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
@@ -38,6 +42,7 @@ class UsersTableSeeder extends Seeder
                 'username'   => 'moderator',
                 'email'      => 'moderator@mail.com',
                 'password'   => bcrypt('123456'),
+                'phone_number' => $faker->e164PhoneNumber,
                 'role_id'    => 3,
                 'active'     => 1,
                 'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
@@ -48,6 +53,7 @@ class UsersTableSeeder extends Seeder
                 'username'   => 'user',
                 'email'      => 'user@mail.com',
                 'password'   => bcrypt('123456'),
+                'phone_number' => $faker->e164PhoneNumber,
                 'role_id'    => 4,
                 'active'     => 1,
                 'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
