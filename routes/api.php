@@ -65,5 +65,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/profile', 'UserController@profile');
         Route::post('/profile', 'UserController@update');
         Route::post('/profile/change_password', 'UserController@changePassword');
+
+        Route::get('/premium/register/{month}', 'PaymentController@getToken');
     });
 });
