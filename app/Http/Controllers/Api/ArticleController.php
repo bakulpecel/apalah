@@ -159,7 +159,6 @@ class ArticleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title'      => 'required|min:5|max:255',
-            'slug'       => 'required|min:5|max:255|alpha_dash|unique:articles',
             'content'    => 'required|min:150',
             'thumbnail'  => 'image|mimes:jpeg,jpg,png|max:512',
             'status'     => 'required|integer|between:0,1',
@@ -188,7 +187,7 @@ class ArticleController extends Controller
         
         $article = Article::create([
             'title'        => $request->title,
-            'slug'         => $request->slug,
+            'slug'         => strtolower(str_replace(' ', '-', $request->title . '-' . str_random(8))),
             'content'      => $request->content,
             'thumbnail'    => $imageName ?? null,
             'status'       => $request->status,
@@ -230,7 +229,6 @@ class ArticleController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title'      => 'required|min:5|max:255',
-            'slug'       => 'required|min:5|max:255|alpha_dash',
             'content'    => 'required|min:150',
             'thumbnail'  => 'image|mimes:jpeg,jpg,png|max:512',
             'status'     => 'required|integer|between:0,1',
@@ -260,9 +258,8 @@ class ArticleController extends Controller
 
         $article->update([
             'title'        => $request->title,
-            'slug'         => $request->slug,
             'content'      => $request->content,
-            'thumbnail'    => $imageName ?? null,
+            'thumbnail'    => $imageName ?? $article->thumbnail,
             'status'       => $request->status,
             'published_at' => $published ?? null,
         ]);

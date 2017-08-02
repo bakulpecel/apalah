@@ -181,7 +181,6 @@ class LessonController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title'           => 'required|min:5|',
-            'slug'            => 'required|min:5|alpha_dash|unique:lessons',
             'summary'         => 'required|min:20|',
             'thumbnail'       => 'image|mimes:jpeg,jpg,png|max:512',
             'url_source_code' => 'active_url',
@@ -212,7 +211,7 @@ class LessonController extends Controller
 
         $lesson =  Lesson::create([
             'title'           => $request->title,
-            'slug'            => $request->slug,
+            'slug'            => strtolower(str_replace(' ', '-', $request->title . '-' . str_random(8))),
             'summary'         => $request->summary,
             'thumbnail'       => $imageName ?? null,
             'url_source_code' => $request->url_source_code ?? null,
@@ -256,7 +255,6 @@ class LessonController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title'           => 'required|min:5|',
-            'slug'            => 'required|min:5|alpha_dash',
             'summary'         => 'required|min:20|',
             'thumbnail'       => 'image|mimes:jpeg,jpg,png|max:512',
             'url_source_code' => 'active_url',
@@ -288,10 +286,10 @@ class LessonController extends Controller
 
         $lesson->update([
             'title'           => $request->title,
-            'slug'            => $request->slug,
+            'slug'            => strtolower(str_replace(' ', '-', $request->title . '-' . str_random(8))),
             'summary'         => $request->summary,
             'parts'           => LessonPart::where('lesson_id', $lesson->id)->count(),
-            'thumbnail'       => $imageName ?? null,
+            'thumbnail'       => $imageName ?? $lesson->thumbnail,
             'url_source_code' => $request->url_source_code ?? null,
             'type'            => $request->type,
             'status'          => $request->status,
