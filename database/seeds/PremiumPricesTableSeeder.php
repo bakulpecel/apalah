@@ -11,13 +11,10 @@ class PremiumPricesTableSeeder extends Seeder
      */
     public function run()
     {
-        $perMonth = 12000;
-
-        for ($i = 0; $i < 12; $i++) { 
-            DB::table('premium_prices')->insert([
-                'month' => $i + 1,
-                'price' => $perMonth * ($i + 1),
-            ]);
-        }
+        DB::table('premium_prices')->insert([
+            ['month' => 1, 'price' => 50000],
+            ['month' => 3, 'price' => 120000],
+            ['month' => 6, 'price' => 180000],
+        ]);
     }
 }

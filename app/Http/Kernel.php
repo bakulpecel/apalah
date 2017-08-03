@@ -59,5 +59,6 @@ class Kernel extends HttpKernel
         'lesson' => \App\Http\Middleware\Lesson::class,
         'article' => \App\Http\Middleware\Article::class,
         'user' => \App\Http\Middleware\User::class,
+        'subcription' => \App\Http\Middleware\Subcription::class,
     ];
 }

@@ -46,12 +46,6 @@ class PaymentController extends Controller
                     'credit_card' => [
                         'secure' => true,
                     ],
-                    'item_details' => [
-                        'id'       => 'Paket-' . $premiumPrice->month . ' Bulan',
-                        'price'    => PremiumPrice::find(1)->price,
-                        'quantity' => $premiumPrice->month,
-                        'name'     => 'Premium member',
-                    ],
                     'customer_details' => [
                         'first_name' => Auth::user()->username,
                         'email'      => Auth::user()->email,
