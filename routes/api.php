@@ -20,6 +20,8 @@ Route::namespace('Api')->group(function () {
     Route::get('/category/article', 'CategoryController@filterArticle');
     Route::get('/category/lesson', 'CategoryController@filterLesson');
 
+    Route::get('/subcription/price', 'SubcriptionController@price');
+
     Route::prefix('/auth')->group(function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
