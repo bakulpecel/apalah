@@ -18,7 +18,7 @@ class LessonPartsTableSeeder extends Seeder
             DB::table('lesson_parts')->insert([
                 'lesson_id'  => rand(1, 10),
                 'title'      => $title = $faker->sentence(),
-                'slug'       => str_replace(' ', '-', strtolower($title) . str_random(8)),
+                'slug'       => str_slug($title . '-' . str_random(8)),
                 'url_video'  => 'https://www.youtube.com/watch?v=Ojs1t-wv0wA',
                 'created_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Jakarta')->toDateTimeString(),

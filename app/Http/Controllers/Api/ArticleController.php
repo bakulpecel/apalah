@@ -205,7 +205,7 @@ class ArticleController extends Controller
         
         $article = Article::create([
             'title'        => $request->title,
-            'slug'         => strtolower(str_replace(' ', '-', $request->title . '-' . str_random(8))),
+            'slug'         => str_slug($request->title . '-'. str_random(8)),
             'content'      => $request->content,
             'thumbnail'    => $imageName ?? null,
             'status'       => $request->status,
@@ -276,6 +276,7 @@ class ArticleController extends Controller
 
         $article->update([
             'title'        => $request->title,
+            'slug'         => str_slug($request->title . '-'. str_random(8)),
             'content'      => $request->content,
             'thumbnail'    => $imageName ?? $article->thumbnail,
             'status'       => $request->status,

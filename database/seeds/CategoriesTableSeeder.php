@@ -16,7 +16,7 @@ class CategoriesTableSeeder extends Seeder
         for ($i = 0; $i < 50; $i++) { 
             DB::table('categories')->insert([
                 'category' => $category = ucwords($faker->unique()->word),
-                'slug'     => str_replace(' ', '-', strtolower($category))
+                'slug'     => str_slug($category),
             ]);
         }
     }

@@ -17,7 +17,7 @@ class LessonsTableSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) { 
             DB::table('lessons')->insert([
                 'title'           => $title = $faker->sentence(),
-                'slug'            => str_replace(' ', '-', strtolower($title)),
+                'slug'            => str_slug($title . '-' . str_random(8)),
                 'summary'         => $faker->paragraph(),
                 'thumbnail'       => time() . 'jpg',
                 'url_source_code' => 'http://github.com',

@@ -211,7 +211,7 @@ class LessonController extends Controller
 
         $lesson =  Lesson::create([
             'title'           => $request->title,
-            'slug'            => strtolower(str_replace(' ', '-', $request->title . '-' . str_random(8))),
+            'slug'            => str_slug($request->title . '-'. str_random(8)),
             'summary'         => $request->summary,
             'thumbnail'       => $imageName ?? null,
             'url_source_code' => $request->url_source_code ?? null,
@@ -286,7 +286,7 @@ class LessonController extends Controller
 
         $lesson->update([
             'title'           => $request->title,
-            'slug'            => strtolower(str_replace(' ', '-', $request->title . '-' . str_random(8))),
+            'slug'            => str_slug($request->title . '-'. str_random(8)),
             'summary'         => $request->summary,
             'parts'           => LessonPart::where('lesson_id', $lesson->id)->count(),
             'thumbnail'       => $imageName ?? $lesson->thumbnail,

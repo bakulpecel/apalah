@@ -116,7 +116,7 @@ class CategoryController extends Controller
                 ->find($valueAC->article_id);
         }
 
-        if (!$articles) {
+        if (!$articles || $articles[0] == null) {
             return $this->resJsonError('Tidak ditemukan artikel dengan kategori '. $category->category, 404);
         }
 
@@ -175,7 +175,7 @@ class CategoryController extends Controller
                 ->find($valueLC->lesson_id);
         }
 
-        if (!$lessons) {
+        if (!$lessons || $lessons[0] == null) {
             return $this->resJsonError('Tidak ditemukan pelajaran dengan kategori '. $category->category, 404);
         }
 

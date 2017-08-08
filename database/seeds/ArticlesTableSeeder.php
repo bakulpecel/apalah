@@ -17,7 +17,7 @@ class ArticlesTableSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) { 
             DB::table('articles')->insert([
                 'title'        => $title = $faker->sentence(),
-                'slug'         => str_replace(' ', '-', strtolower($title)),
+                'slug'         => str_slug($title . '-' . str_random(8)),
                 'content'      => $faker->text($maxNbChars = 1000),
                 'thumbnail'    => time() . 'jpg',
                 'status'       => rand(0, 1),
