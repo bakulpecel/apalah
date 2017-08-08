@@ -136,7 +136,25 @@ class ArticleController extends Controller
             ->json($response, 200);
     }
 
-    public function show($slug)
+    public function guestShow($slug)
+    {
+        $article = Article::where('slug', $slug)
+            ->first();
+
+        if (!$article) {
+            return $this->resJsonError('Artikel tidak ditemukan', 404);
+        }
+
+        $response = fractal()
+            ->item($article)
+            ->transformWith(new ArticleTransformer)
+            ->toArray();
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function authShow($slug)
     {
         $article = Article::where('slug', $slug)
             ->where('status', 1)

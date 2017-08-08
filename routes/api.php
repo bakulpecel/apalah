@@ -36,7 +36,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/lesson/{slug}/{slugPart}', 'LessonPartController@authShow');
 
         Route::get('/article', 'ArticleController@authIndex');
-        Route::get('/article/{slug}', 'ArticleController@show');
+        Route::get('/article/{slug}', 'ArticleController@authShow');
     });
 
     Route::prefix('/guest')->middleware('auth:api')->group(function () {
@@ -55,7 +55,7 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/article', 'ArticleController@guestIndex');
         Route::get('/article/draft', 'ArticleController@guestIndexDraft');
-        Route::get('/article/{slug}', 'ArticleController@show');
+        Route::get('/article/{slug}', 'ArticleController@guestShow');
         Route::post('/article', 'ArticleController@store')->middleware('article:api');
         Route::post('/article/{slug}', 'ArticleController@update')->middleware('article:api');
         Route::delete('/article/{slug}', 'ArticleController@destroy')->middleware('article:api');
