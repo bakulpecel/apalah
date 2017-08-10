@@ -107,7 +107,7 @@ class UserController extends Controller
         $user = User::find(Auth::user()->id)->update([
             'name'     => $request->name,
             'phone_number' => $request->phone_number,
-            'photo'    => $imageName ?? null,
+            'photo'    => $imageName ?? Auth::user()->photo,
         ]);
 
         return $this->resJsonSuccess('Akun berhasil diperbarui.', 200);
