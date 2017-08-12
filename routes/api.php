@@ -68,8 +68,10 @@ Route::namespace('Api')->group(function () {
         Route::post('/profile', 'UserController@update');
         Route::post('/profile/change_password', 'UserController@changePassword');
 
+        Route::get('/subcription/transactions', 'SubcriptionController@transactions');
+        Route::get('/subcription/transactions/{orderId}', 'SubcriptionController@transactionsDetail');
         Route::put('/subcription/price', 'SubcriptionController@setPrice')->middleware('subcription:api');
 
-        Route::get('/premium/register/{month}', 'PaymentController@getToken');
+        Route::get('/premium/register/{month}', 'SubcriptionController@getToken');
     });
 });
